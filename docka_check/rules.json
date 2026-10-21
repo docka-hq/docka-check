@@ -1,5 +1,5 @@
 {
- "table_version": "2026-10-20",
+ "table_version": "2026-10-21",
  "about": "One row per check or known failure, per client, with its evidence class and the date of the client behaviour it describes. Labels: blocker = our own run confirmed it; likely = the platform documents it; advisory = seen in a run, but the shape alone does not predict it, or friction rather than failure; info = a client property, not a server finding; unconfirmed = listed as not checked, never shown as a finding. Each run case carries its date, the text a report shows, and a public link where one exists; the run records themselves are not published.",
  "clients": {
   "copilot-studio": {
@@ -47,7 +47,7 @@
   },
   "claude-code-94351": {
    "url": "https://github.com/anthropics/claude-code/issues/94351",
-   "read": "2026-10-17"
+   "read": "2026-10-21"
   },
   "claude-code-docs": {
    "url": "https://code.claude.com/docs/en/mcp",
@@ -55,7 +55,7 @@
   },
   "claude-code-88882": {
    "url": "https://github.com/anthropics/claude-code/issues/88882",
-   "read": "2026-10-17"
+   "read": "2026-10-21"
   },
   "claude-code-95504": {
    "url": "https://github.com/anthropics/claude-code/issues/95504",
@@ -1084,7 +1084,7 @@
    "tier": "schema",
    "known_failure": false,
    "title": "A schema that declares an older JSON Schema draft",
-   "detects": "$schema naming draft-04, draft-06 or draft-07.",
+   "detects": "$schema naming draft-04, draft-06 or draft-07, in an input or output schema.",
    "fix": "Write schemas in JSON Schema 2020-12.",
    "per_client": {
     "claude-api": {
@@ -1105,18 +1105,25 @@
      "effect": "fails",
      "evidence": "docs",
      "label": "likely",
-     "behaviour_date": "2026-10-17",
-     "says": "Claude Desktop rejects draft-07 schemas (open issue).",
+     "behaviour_date": "2026-10-21",
+     "says": "Claude Desktop rejects the tools of a server whose outputSchema declares draft-07 (open issue).",
      "source": "claude-code-94351"
     },
     "claude-code": {
      "effect": "fails",
      "evidence": "docs",
      "label": "likely",
-     "behaviour_date": "2026-10-17",
-     "says": "Open issue: draft-07 schemas rejected.",
+     "behaviour_date": "2026-10-21",
+     "says": "Open issue: a tool whose outputSchema declares draft-07 fails when it is called; tools/list still lists it.",
      "source": "claude-code-88882",
-     "note": "Anthropic's API connector accepted draft-07 declarations in our 2026-09-25 run; this is Claude Code's own issue."
+     "note": "Draft-07 in an inputSchema alone is not what fails: in our 2026-10-21 run Claude Code 2.1.306 listed 19 such tools and called one without an error. Anthropic's API connector accepted draft-07 declarations in our 2026-09-25 run.",
+     "cases": [
+      {
+       "date": "2026-10-21",
+       "ref": "c060",
+       "report": "a time-tracking MCP server of our own: 19 tools declaring draft-07 in inputSchema only; Claude Code 2.1.306 listed all 19 and called one without an error (counter-case for inputSchema)"
+      }
+     ]
     }
    }
   },

@@ -63,6 +63,11 @@ def check_schema(tools, server_name="server"):
             "views": views(tools, hits, res)}
 
 
+def _old_output(h):
+    """A draft-07 outputSchema: what the Claude Desktop and Claude Code issues are about (#94351, #88882)."""
+    return h["detail"].startswith(("outputSchema", "output_schema")) and "draft-07" in h["detail"]
+
+
 def views(tools, hits, res):
     """How each client will see the tools: what it drops, what it asks the user, what needs a confirmation."""
     names = lambda rule, pred=lambda h: True: sorted({h["tool"] for h in hits[rule] if h["tool"] and pred(h)})
@@ -75,15 +80,14 @@ def views(tools, hits, res):
             "may_drop": {"past position 70, on agents that cut": past70, "$ref inputs": names("MS-DROP")},
             "rows_may_lose_keys": names("ROWKEYS"),
         },
-        "claude-api": {"rejects": {"root anyOf/oneOf/allOf": names("ROOT-COMBINATOR"),
-                                   "older JSON Schema draft": names("SCHEMA-DIALECT")},
+        "claude-api": {"rejects": {"root anyOf/oneOf/allOf": names("ROOT-COMBINATOR")},
                        "validates_results_of": names("OUTSCHEMA-DECLARED"), "size": size},
         "claude-ai": {"rejects": {"declares outputSchema (claude-ai-mcp#673)": names("OUTSCHEMA-DECLARED"),
-                                  "older JSON Schema draft (Desktop)": names("SCHEMA-DIALECT")}},
+                                  "draft-07 outputSchema (Desktop, open issue)": names("SCHEMA-DIALECT", _old_output)}},
         "claude-code": {"drops": {"full name over 128 characters": names("NAME-128"),
                                   "root allOf (open issue)": names("ROOT-COMBINATOR",
                                                                    lambda h: "allOf" in h.get("combinators", []))},
-                        "rejects": {"older JSON Schema draft (open issue)": names("SCHEMA-DIALECT")},
+                        "fails_when_called": {"draft-07 outputSchema (open issue)": names("SCHEMA-DIALECT", _old_output)},
                         "validates_results_of": names("OUTSCHEMA-DECLARED")},
         "openai-api": {"size": size},
         "chatgpt": {"asks_confirmation": {"no readOnlyHint, treated as a write": names("NO-READONLYHINT")}},
@@ -91,9 +95,11 @@ def views(tools, hits, res):
 
 
 def client_hits(rule_id, client, h):
-    """The hits on one rule that count for this client. Claude Code's open issue is about root allOf only."""
-    if rule_id == "SCHEMA-DIALECT" and client in ("claude-ai", "claude-code"):     # their issues name draft-07
-        return [x for x in h if "draft-07" in x["detail"]]
+    """The hits on one rule that count for this client. Claude Code's root-combinator issue is about allOf only; the
+    Claude Desktop and Claude Code dialect issues are about a draft-07 outputSchema (draft-07 in an inputSchema alone
+    was listed and called without an error in our 2026-10-21 run)."""
+    if rule_id == "SCHEMA-DIALECT" and client in ("claude-ai", "claude-code"):
+        return [x for x in h if _old_output(x)]
     if rule_id == "ROOT-COMBINATOR" and client == "claude-code":
         return [x for x in h if "allOf" in x.get("combinators", [])]
     return h

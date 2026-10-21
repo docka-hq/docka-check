@@ -4,7 +4,7 @@
 
 Listed below, client by client: 10 findings (5 blocker, 2 likely, 3 advisory).
 
-<sub>docka-check 0.1.0 · rule table 2026-10-20 · tiers run: signin, schema, calls · (time)</sub>
+<sub>docka-check 0.1.1 · rule table 2026-10-21 · tiers run: signin, schema, calls · (time)</sub>
 
 | | Copilot Studio | Claude API | claude.ai | Claude Code | OpenAI API | ChatGPT |
 |---|---|---|---|---|---|---|

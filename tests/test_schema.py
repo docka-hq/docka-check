@@ -1,6 +1,7 @@
 """The schema tier: each per-client rule on a minimal schema, through the entry point the CLI uses. The Copilot
 shapes themselves (F1-ROW, UNTYPED, REQ8) run on the test server in tests/test_known_cases.py."""
 
+import json
 import unittest
 
 from docka_check import findings, rules, schema
@@ -46,14 +47,20 @@ class NewClientRules(unittest.TestCase):
         self.assertIn(("ROOT-COMBINATOR", "claude-code", "likely"), self.labels([t2]))
 
     def test_schema_dialect(self):
+        """The Claude Desktop and Claude Code issues are about a draft-07 outputSchema; draft-07 in an inputSchema alone
+        was listed and called without an error (2026-10-21), and Anthropic's connector passed on it (2026-09-25)."""
+        dialect = lambda got: {g for g in got if g[0] == "SCHEMA-DIALECT"}
         t = tool(annotations={"readOnlyHint": True})
         t["inputSchema"]["$schema"] = "http://json-schema.org/draft-07/schema#"
-        got = self.labels([t])
-        self.assertIn(("SCHEMA-DIALECT", "claude-code", "likely"), got)
-        self.assertIn(("SCHEMA-DIALECT", "claude-ai", "likely"), got)
-        self.assertFalse([g for g in got if g[0] == "SCHEMA-DIALECT" and g[1] == "claude-api"])
-        t["inputSchema"]["$schema"] = "https://json-schema.org/draft/2020-12/schema"
-        self.assertFalse([g for g in self.labels([t]) if g[0] == "SCHEMA-DIALECT"])
+        self.assertEqual(dialect(self.labels([t])), set())
+        t["outputSchema"] = {"$schema": "http://json-schema.org/draft-07/schema#", "type": "object"}
+        self.assertEqual(dialect(self.labels([t])), {("SCHEMA-DIALECT", "claude-code", "likely"),
+                                                     ("SCHEMA-DIALECT", "claude-ai", "likely")})
+        views = schema.check_schema([t])["views"]
+        self.assertEqual(views["claude-code"]["fails_when_called"]["draft-07 outputSchema (open issue)"], ["t"])
+        self.assertNotIn("older JSON Schema draft", json.dumps(views["claude-api"]))
+        t["outputSchema"]["$schema"] = t["inputSchema"]["$schema"] = "https://json-schema.org/draft/2020-12/schema"
+        self.assertEqual(dialect(self.labels([t])), set())
 
     def test_name_128(self):
         long = tool(name="x" * 120, annotations={"readOnlyHint": True})

@@ -2,7 +2,7 @@
 
 **Checked 19 of 27 known failures. Found: 0. Only an agent run shows: 6. Needs write calls (v1): 2. Not checked in this run: 0.**
 
-<sub>docka-check 0.1.0 · rule table 2026-10-20 · tiers run: signin, schema, calls · (time)</sub>
+<sub>docka-check 0.1.1 · rule table 2026-10-21 · tiers run: signin, schema, calls · (time)</sub>
 
 | | Copilot Studio | Claude API | claude.ai | Claude Code | OpenAI API | ChatGPT |
 |---|---|---|---|---|---|---|
