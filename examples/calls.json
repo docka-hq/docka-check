@@ -1,0 +1,7 @@
+{
+ "calls": [
+  {"tool": "get_deal", "arguments": {"deal_id": "1"}},
+  {"tool": "list_deals", "arguments": {}}
+ ],
+ "promised_tools": ["get_deal", "list_deals"]
+}

@@ -1,0 +1,93 @@
+name: docka-check
+description: >-
+  What each AI client (Copilot Studio, Claude, ChatGPT) sees on your MCP server, as a job summary and optionally a
+  PR comment. No model calls, never a verdict. A full run needs the server's key from docka-check verify, and its
+  report is then also sent to Docka; without one, the run is an outside check and nothing is sent to Docka.
+inputs:
+  url:
+    description: Your MCP server's URL.
+    required: true
+  token:
+    description: Your bearer token, from a secret. Never printed.
+    required: false
+    default: ""
+  calls-config:
+    description: Path to a JSON file listing the read tools to call ({calls, promised_tools}).
+    required: false
+    default: ""
+  auto-read:
+    description: Also call tools marked readOnlyHint true that take no required input ("true" / "false").
+    required: false
+    default: "false"
+  verify-key:
+    description: >-
+      The key from docka-check verify for this server, from a secret. With it the run is a full one and its JSON
+      report is also sent to Docka. Without it: an outside check (at most 5 requests per server, no tool calls).
+      A server on the runner itself (127.0.0.1) needs none.
+    required: false
+    default: ""
+  baseline:
+    description: Path to a previous JSON report. The build fails only on a new blocker confirmed by our runs.
+    required: false
+    default: ""
+  client:
+    description: One client (copilot-studio, claude-api, claude-ai, claude-code, openai-api, chatgpt) or "all".
+    required: false
+    default: all
+  comment:
+    description: Post the report as a PR comment ("true" / "false").
+    required: false
+    default: "false"
+outputs:
+  report-json:
+    description: Path to the JSON report (keep it as the next run's baseline).
+    value: ${{ steps.run.outputs.json }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - shell: bash
+      run: python -m pip install --quiet "$ACTION_PATH"
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+    - id: run
+      shell: bash
+      env:
+        DC_URL: ${{ inputs.url }}
+        DC_TOKEN: ${{ inputs.token }}
+        DC_CALLS: ${{ inputs.calls-config }}
+        DC_AUTO_READ: ${{ inputs.auto-read }}
+        DOCKA_CHECK_KEY: ${{ inputs.verify-key }}
+        DC_BASELINE: ${{ inputs.baseline }}
+        DC_CLIENT: ${{ inputs.client }}
+      run: |
+        set -euo pipefail
+        args=(check --url "$DC_URL" --client "$DC_CLIENT" --format md --out docka-check.md --json-out docka-check.json)
+        if [ -n "$DC_TOKEN" ]; then args+=(--token-env DC_TOKEN); fi
+        if [ -n "$DC_CALLS" ]; then args+=(--calls-config "$DC_CALLS"); fi
+        if [ "$DC_AUTO_READ" = "true" ]; then args+=(--auto-read); fi
+        if [ -n "$DC_BASELINE" ]; then args+=(--baseline "$DC_BASELINE"); fi
+        set +e
+        docka-check "${args[@]}"
+        code=$?
+        set -e
+        if [ -f docka-check.md ]; then
+          cat docka-check.md >> "$GITHUB_STEP_SUMMARY"
+          # the log gets the two count lines only: no URL, no tool names
+          grep -E '^\*\*Checked |^Listed below' docka-check.md | tr -d '*' || true
+          echo "report=yes" >> "$GITHUB_OUTPUT"
+        fi
+        echo "json=$PWD/docka-check.json" >> "$GITHUB_OUTPUT"
+        echo "code=$code" >> "$GITHUB_OUTPUT"
+    - if: inputs.comment == 'true' && github.event_name == 'pull_request' && steps.run.outputs.report == 'yes'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR: ${{ github.event.pull_request.number }}
+      run: gh pr comment "$PR" --body-file docka-check.md
+    - shell: bash
+      env:
+        CODE: ${{ steps.run.outputs.code }}
+      run: exit "$CODE"

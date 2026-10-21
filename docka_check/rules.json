@@ -1,0 +1,1668 @@
+{
+ "table_version": "2026-10-20",
+ "about": "One row per check or known failure, per client, with its evidence class and the date of the client behaviour it describes. Labels: blocker = our own run confirmed it; likely = the platform documents it; advisory = seen in a run, but the shape alone does not predict it, or friction rather than failure; info = a client property, not a server finding; unconfirmed = listed as not checked, never shown as a finding. Each run case carries its date, the text a report shows, and a public link where one exists; the run records themselves are not published.",
+ "clients": {
+  "copilot-studio": {
+   "name": "Copilot Studio",
+   "agent_run": "needs a Microsoft tenant; Docka runs it"
+  },
+  "claude-api": {
+   "name": "Claude through Anthropic's API (MCP connector)",
+   "agent_run": "run with your own Anthropic key (v1)"
+  },
+  "claude-ai": {
+   "name": "claude.ai and Claude Desktop",
+   "agent_run": "an interface, not run by this tool"
+  },
+  "claude-code": {
+   "name": "Claude Code",
+   "agent_run": "run with your own key (v1)"
+  },
+  "openai-api": {
+   "name": "GPT through OpenAI's API (Responses mcp tool)",
+   "agent_run": "run with your own OpenAI key (v1)"
+  },
+  "chatgpt": {
+   "name": "ChatGPT (apps and developer mode)",
+   "agent_run": "an interface, not run by this tool"
+  }
+ },
+ "sources": {
+  "claude-api-docs": {
+   "url": "https://platform.claude.com/docs/en/agents-and-tools/mcp-connector",
+   "read": "2026-10-17"
+  },
+  "claude-ai-auth-docs": {
+   "url": "https://claude.com/docs/connectors/building/authentication",
+   "read": "2026-10-17",
+   "note": "the claude.ai block of the 2026-10-18 research (§3) cites this page and add-unlisted"
+  },
+  "claude-ai-unlisted-docs": {
+   "url": "https://claude.com/docs/connectors/custom/add-unlisted",
+   "read": "2026-10-17"
+  },
+  "claude-ai-mcp-673": {
+   "url": "https://github.com/anthropics/claude-ai-mcp/issues/673",
+   "read": "2026-10-17"
+  },
+  "claude-code-94351": {
+   "url": "https://github.com/anthropics/claude-code/issues/94351",
+   "read": "2026-10-17"
+  },
+  "claude-code-docs": {
+   "url": "https://code.claude.com/docs/en/mcp",
+   "read": "2026-10-17"
+  },
+  "claude-code-88882": {
+   "url": "https://github.com/anthropics/claude-code/issues/88882",
+   "read": "2026-10-17"
+  },
+  "claude-code-95504": {
+   "url": "https://github.com/anthropics/claude-code/issues/95504",
+   "read": "2026-10-17"
+  },
+  "openai-mcp-docs": {
+   "url": "https://developers.openai.com/api/docs/guides/tools-connectors-mcp",
+   "read": "2026-10-17"
+  },
+  "chatgpt-mcp-docs": {
+   "url": "https://developers.openai.com/api/docs/guides/custom-mcp-server",
+   "read": "2026-10-17"
+  },
+  "chatgpt-auth-docs": {
+   "url": "https://developers.openai.com/plugins/build/auth",
+   "read": "2026-10-17"
+  },
+  "copilot-add-docs": {
+   "url": "https://learn.microsoft.com/en-us/microsoft-copilot-studio/mcp-add-existing-server-to-agent",
+   "read": "2026-10-17",
+   "updated": "2026-05-28"
+  },
+  "copilot-known-issues": {
+   "url": "https://learn.microsoft.com/en-us/microsoft-copilot-studio/mcp-troubleshooting",
+   "read": "2026-10-17",
+   "updated": "2026-08-19"
+  },
+  "zuplo-clients": {
+   "url": "https://zuplo.com/learn/mcp/compatibility/clients",
+   "read": "2026-10-17",
+   "updated": "2026-07-31"
+  },
+  "copilot-guide": {
+   "url": "https://lab.docka.ai/guides/copilot-studio-mcp/",
+   "read": "2026-10-18"
+  },
+  "apideck-guide": {
+   "url": "https://lab.docka.ai/guides/apideck-mcp/",
+   "read": "2026-10-18"
+  }
+ },
+ "rules": [
+  {
+   "id": "F1-ROW",
+   "tier": "schema",
+   "known_failure": true,
+   "title": "Required fields inside the rows of a required top-level array",
+   "detects": "A required top-level array input whose object rows list required fields.",
+   "fix": "Do not mark fields inside rows as required; check them in your handler. Or take the array as a JSON string.",
+   "guide": "https://lab.docka.ai/guides/copilot-studio-mcp/#2-required-fields-in-array-rows-the-mcp-tool-is-never-called",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-20",
+     "says": "On Standard agents, Copilot asks the user for row fields the model already filled, and never calls the tool.",
+     "cases": [
+      {
+       "date": "2026-09-27",
+       "ref": "c001",
+       "report": "monday create_items: 0 of 24 in Copilot across four models and both paths (25 and 27 September)",
+       "public": "https://github.com/mondaycom/mcp/issues/499"
+      },
+      {
+       "date": "2026-09-30",
+       "ref": "c002",
+       "report": "a work-management vendor's create-task tool: 0 of 3, and 0 of 3 on the vendor's own documented setup"
+      },
+      {
+       "date": "2026-10-20",
+       "ref": "c003",
+       "report": "our own test server with monday's 2026-09-23 create_items: Standard agents 0 of 6 (GPT Chat Latest, Claude Opus 4.8), the newer agent type 6 of 6 (Claude Opus 5.5, GPT-5.5 Chat)",
+       "public": "https://lab.docka.ai/guides/copilot-studio-mcp/#2-required-fields-in-array-rows-the-mcp-tool-is-never-called"
+      }
+     ],
+     "note": "Standard agents only. On 2026-10-20 Studio's newer Agent (GitHub Copilot) type, the one its main Agent card makes, called this shape 6 of 6 (Claude Opus 5.5, GPT-5.5 Chat); Standard agents 0 of 6 (GPT Chat Latest, Claude Opus 4.8)."
+    },
+    "claude-api": {
+     "effect": "passes",
+     "evidence": "run",
+     "behaviour_date": "2026-09-25",
+     "cases": [
+      {
+       "date": "2026-09-25",
+       "ref": "c004",
+       "report": "monday create_items through Anthropic's connector: passed outside Copilot (6 of 6 with GPT)"
+      }
+     ]
+    },
+    "openai-api": {
+     "effect": "passes",
+     "evidence": "run",
+     "behaviour_date": "2026-09-25",
+     "cases": [
+      {
+       "date": "2026-09-25",
+       "ref": "c005",
+       "report": "monday create_items through OpenAI's MCP tool: passed outside Copilot"
+      }
+     ]
+    }
+   },
+   "covers": "F1-ROW"
+  },
+  {
+   "id": "UNTYPED",
+   "tier": "schema",
+   "known_failure": true,
+   "title": "A required top-level array whose items have no type",
+   "detects": "A required top-level array input with items missing, {} or only a description.",
+   "fix": "Describe each row as an object with its properties.",
+   "guide": "https://lab.docka.ai/guides/copilot-studio-mcp/#4-error-code-systemerror-array-items-without-a-type",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-20",
+     "says": "On Standard agents, Copilot types the input as a list of plain values and stops with SystemError when the model passes objects.",
+     "cases": [
+      {
+       "date": "2026-10-01",
+       "ref": "c006",
+       "report": "Lucid lucid_create_org_chart: 0 of 6 in Copilot, 6 of 6 outside",
+       "public": "https://github.com/lucidsoftware/lucid-mcp-server/issues/13"
+      },
+      {
+       "date": "2026-10-20",
+       "ref": "c007",
+       "report": "our own test server with Lucid's org-chart tool as it was before its 2026-10-12 fix: a Standard agent 0 of 3 (SystemError before the call), the newer agent type 3 of 3",
+       "public": "https://lab.docka.ai/guides/copilot-studio-mcp/#4-error-code-systemerror-array-items-without-a-type"
+      }
+     ],
+     "note": "Standard agents only. On 2026-10-20 Studio's newer Agent (GitHub Copilot) type, the one its main Agent card makes, called this shape 3 of 3 (Claude Opus 5.5); a Standard agent still stopped with SystemError, 0 of 3 (GPT Chat Latest)."
+    },
+    "claude-api": {
+     "effect": "passes",
+     "evidence": "run",
+     "behaviour_date": "2026-10-01",
+     "cases": [
+      {
+       "date": "2026-10-01",
+       "ref": "c008",
+       "report": "Lucid org chart through Anthropic's connector: 3 of 3"
+      }
+     ]
+    },
+    "openai-api": {
+     "effect": "passes",
+     "evidence": "run",
+     "behaviour_date": "2026-10-01",
+     "cases": [
+      {
+       "date": "2026-10-01",
+       "ref": "c009",
+       "report": "Lucid org chart through OpenAI's MCP tool: 3 of 3"
+      }
+     ]
+    }
+   },
+   "covers": "UNTYPED"
+  },
+  {
+   "id": "REQ8",
+   "tier": "schema",
+   "known_failure": true,
+   "title": "Eight or more required inputs on one tool",
+   "detects": "A tool whose input schema lists eight or more required properties.",
+   "fix": "Require only what you cannot default.",
+   "guide": "https://lab.docka.ai/guides/copilot-studio-mcp/#5-copilot-asks-the-user-for-an-input-the-model-left-out",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-20",
+     "says": "On Standard agents, Copilot asks the user for a required input the model left out, instead of returning the error to the model.",
+     "cases": [
+      {
+       "date": "2026-10-05",
+       "ref": "c010",
+       "report": "monday search with 8 required: GPT-5.5 Chat in Copilot 0 of 3; with 1 required: 3 of 3",
+       "public": "https://github.com/mondaycom/mcp/issues/508"
+      },
+      {
+       "date": "2026-10-20",
+       "ref": "c011",
+       "report": "our own test server with monday's search and its eight required inputs of 2026-10-05, reconstructed: GPT-5.5 Chat 0 of 3 on a Standard agent, 3 of 3 on the newer agent type",
+       "public": "https://lab.docka.ai/guides/copilot-studio-mcp/#5-copilot-asks-the-user-for-an-input-the-model-left-out"
+      }
+     ],
+     "note": "Standard agents only, and model-dependent there: Claude in Copilot filled all eight and passed (2026-10-05). On 2026-10-20 GPT-5.5 Chat left the inputs empty on a Standard agent (0 of 3) and filled all eight on Studio's newer Agent (GitHub Copilot) type (3 of 3)."
+    },
+    "claude-api": {
+     "effect": "passes",
+     "evidence": "run",
+     "behaviour_date": "2026-10-05",
+     "cases": [
+      {
+       "date": "2026-10-05",
+       "ref": "c012",
+       "report": "monday after1: Claude through Anthropic's connector filled all eight required search inputs and passed"
+      }
+     ]
+    }
+   },
+   "covers": "REQ8"
+  },
+  {
+   "id": "CUT70",
+   "tier": "schema",
+   "known_failure": true,
+   "title": "More than 70 tools",
+   "detects": "tools/list has more than 70 tools; reports which sit past position 70.",
+   "fix": "Put the tools behind your users' main jobs first. If you have more than 70, choose which 70 Copilot users get.",
+   "guide": "https://lab.docka.ai/guides/copilot-studio-mcp/#1-mcp-tools-not-showing-copilot-studio-can-cut-the-list-at-70",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-10-12",
+     "says": "On some servers a classic Copilot agent keeps only the first 70 tools; a needed tool past the cut is invisible.",
+     "cases": [
+      {
+       "date": "2026-09-23",
+       "ref": "c013",
+       "report": "monday by URL: 74 of 97 listed, banner 'Limiting number of tools to 70'"
+      },
+      {
+       "date": "2026-10-05",
+       "ref": "c014",
+       "report": "monday search at #85: GPT in Copilot 0 of 3"
+      },
+      {
+       "date": "2026-10-01",
+       "ref": "c015",
+       "report": "a sales-data vendor's 86 tools, all listed by URL with no banner (counter-case)"
+      },
+      {
+       "date": "2026-10-12",
+       "ref": "c016",
+       "report": "a marketing vendor's 282 tools, all listed by Copilot's new default agent (counter-case)"
+      }
+     ],
+     "note": "Sources disagree: Zuplo lists 128 as Copilot Studio's cap (2026-07-31); Microsoft's page lists none. Never read this as 'Copilot keeps 70'."
+    }
+   },
+   "covers": "CUT70"
+  },
+  {
+   "id": "ROWKEYS",
+   "tier": "schema",
+   "known_failure": true,
+   "title": "Array rows with optional keys",
+   "detects": "An array of objects whose rows declare properties that are not required, or take free extra keys.",
+   "fix": "Give every row the same keys; use an empty value where a row has nothing.",
+   "guide": "https://lab.docka.ai/guides/copilot-studio-mcp/#3-array-rows-lose-fields-copilot-sends-only-the-first-row-s-keys",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-10-08",
+     "says": "Copilot sends every row with the first row's keys only; it fails only when the rows differ.",
+     "cases": [
+      {
+       "date": "2026-10-01",
+       "ref": "c017",
+       "report": "an opening-hours tool: rows lost the keys they needed, 0 of 3"
+      },
+      {
+       "date": "2026-10-01",
+       "ref": "c018",
+       "report": "a CRM's note and task in one call: the task arrived blank"
+      },
+      {
+       "date": "2026-10-12",
+       "ref": "c019",
+       "report": "Lucid after its fix (rows still optional): 6 of 6 (counter-case)"
+      }
+     ]
+    }
+   },
+   "covers": "ROWKEYS"
+  },
+  {
+   "id": "FREEFORM",
+   "tier": "schema",
+   "known_failure": true,
+   "title": "An object with no declared properties",
+   "detects": "type object (or a row) with no properties and additionalProperties not false.",
+   "fix": "Declare the common properties, or take name/value rows.",
+   "guide": "https://lab.docka.ai/guides/copilot-studio-mcp/#3-array-rows-lose-fields-copilot-sends-only-the-first-row-s-keys",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-10-01",
+     "says": "Copilot types a free map as an empty record; keys survive in the first row only.",
+     "cases": [
+      {
+       "date": "2026-10-01",
+       "ref": "c020",
+       "report": "a CRM's free-form properties map: the second row lost its keys"
+      }
+     ]
+    }
+   },
+   "covers": "FREEFORM"
+  },
+  {
+   "id": "F1-ROW-OTHER",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "The F1-ROW or UNTYPED shape in an optional or nested array",
+   "detects": "Required row fields, or untyped items, in an array that is optional or nested inside an object.",
+   "fix": "As for F1-ROW and UNTYPED.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "unknown",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-10-01",
+     "says": "Unconfirmed: in one CRM we ran, required row fields one level down caused no handback.",
+     "cases": [
+      {
+       "date": "2026-10-01",
+       "ref": "c021",
+       "report": "a CRM's required row fields one level down: no handback (counter-case)"
+      }
+     ]
+    }
+   },
+   "covers": "F1-ROW-OTHER, UNTYPED-OTHER"
+  },
+  {
+   "id": "DELETE-NOHINT",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "A delete tool not annotated destructiveHint: true",
+   "detects": "A tool named delete/remove/destroy/purge/erase whose annotations do not say destructiveHint: true.",
+   "fix": "Annotate delete tools as destructive, and keep them out of a default tool set.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "unknown",
+     "evidence": "unconfirmed",
+     "label": "unconfirmed",
+     "behaviour_date": "2026-10-16"
+    },
+    "claude-api": {
+     "effect": "unknown",
+     "evidence": "unconfirmed",
+     "label": "unconfirmed",
+     "behaviour_date": "2026-10-16",
+     "note": "Related, not this shape: deletes behind Apideck's single execute_tool, 7 of 15 'clean up' runs deleted deals (DELETE-ON-CLEANUP)."
+    }
+   },
+   "covers": "DELETE-NOHINT"
+  },
+  {
+   "id": "SIZE",
+   "tier": "schema",
+   "known_failure": true,
+   "title": "Tool definitions over about 50,000 tokens",
+   "detects": "The tools/list JSON over 200,000 characters, sent on every model turn.",
+   "fix": "Offer a smaller tool set or a second endpoint for the main jobs.",
+   "per_client": {
+    "claude-api": {
+     "effect": "friction",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-10-12",
+     "says": "A cost: a server with 282 tools cost $0.94 for one simple job.",
+     "cases": [
+      {
+       "date": "2026-10-12",
+       "ref": "c022",
+       "report": "a server with 282 tools (~131K tokens): $0.94 for a simple job"
+      },
+      {
+       "date": "2026-10-16",
+       "ref": "c023",
+       "report": "a server with 356 tools: about $1.10 a run"
+      }
+     ]
+    },
+    "openai-api": {
+     "effect": "friction",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-10-12",
+     "says": "A cost, much smaller: the same job cost $0.02.",
+     "cases": [
+      {
+       "date": "2026-10-12",
+       "ref": "c024",
+       "report": "a server with 282 tools: $0.02 for the same job"
+      }
+     ]
+    }
+   },
+   "covers": "SIZE"
+  },
+  {
+   "id": "MS-DROP",
+   "tier": "schema",
+   "known_failure": true,
+   "title": "A $ref in a tool's input schema",
+   "detects": "Any $ref in an input or output schema.",
+   "fix": "Inline the referenced schema.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-10-01",
+     "says": "Documented as 'filtered out'; in our runs one $ref input came through with no inputs, and another resolved fine.",
+     "source": "copilot-known-issues",
+     "cases": [
+      {
+       "date": "2026-10-01",
+       "ref": "c025",
+       "report": "an update tool with a $ref body: listed with no inputs"
+      },
+      {
+       "date": "2026-10-01",
+       "ref": "c026",
+       "report": "a CRM's $ref: resolved (counter-case)"
+      }
+     ]
+    }
+   },
+   "covers": "MS-DROP"
+  },
+  {
+   "id": "MS-CRASH",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "A numeric exclusiveMinimum",
+   "detects": "exclusiveMinimum given as a number in an input schema.",
+   "fix": "Use minimum with a value one step higher, or drop it.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-08-19",
+     "says": "Documented: 'A System.FormatException is thrown'. In our runs such tools were listed; call time untested.",
+     "source": "copilot-known-issues",
+     "cases": [
+      {
+       "date": "2026-09-23",
+       "ref": "c027",
+       "report": "monday: the numeric exclusiveMinimum tools were listed"
+      }
+     ]
+    }
+   },
+   "covers": "MS-CRASH"
+  },
+  {
+   "id": "MS-TRUNC",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "A type given as an array of types",
+   "detects": "type: [\"string\", \"null\"] and similar, in an input schema.",
+   "fix": "Use one type; express optional through required.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-08-19",
+     "says": "Documented: the input schema 'is truncated'.",
+     "source": "copilot-known-issues"
+    }
+   },
+   "covers": "MS-TRUNC"
+  },
+  {
+   "id": "MS-ENUM",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "An enum input",
+   "detects": "enum in an input schema.",
+   "fix": "List the allowed values in the description too.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-08-19",
+     "says": "Documented: 'interpreted as string instead of enum'.",
+     "source": "copilot-known-issues"
+    }
+   },
+   "covers": "MS-ENUM"
+  },
+  {
+   "id": "MS-COUNT",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "More than 128 tools",
+   "detects": "tools/list has more than 128 tools.",
+   "fix": "Offer a smaller tool set.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-07-31",
+     "says": "Zuplo lists 128 as Copilot Studio's cap; Microsoft's add-server page lists none, and Copilot's new default agent listed 282 tools on one server on 2026-10-12.",
+     "source": "zuplo-clients"
+    }
+   },
+   "covers": "MS-COUNT"
+  },
+  {
+   "id": "SSE-ONLY",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "Only the SSE transport",
+   "detects": "The server speaks only the deprecated HTTP+SSE transport.",
+   "fix": "Serve Streamable HTTP.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-05-28",
+     "says": "Documented: Streamable HTTP only; SSE dropped after August 2025.",
+     "source": "copilot-add-docs"
+    },
+    "claude-api": {
+     "effect": "passes",
+     "evidence": "docs",
+     "behaviour_date": "2026-10-17",
+     "source": "claude-api-docs"
+    },
+    "claude-ai": {
+     "effect": "passes",
+     "evidence": "docs",
+     "behaviour_date": "2026-10-17",
+     "source": "claude-ai-auth-docs"
+    },
+    "claude-code": {
+     "effect": "passes",
+     "evidence": "docs",
+     "behaviour_date": "2026-10-17",
+     "source": "claude-code-docs",
+     "note": "SSE is deprecated in Claude Code."
+    },
+    "openai-api": {
+     "effect": "passes",
+     "evidence": "docs",
+     "behaviour_date": "2026-10-17",
+     "source": "openai-mcp-docs"
+    },
+    "chatgpt": {
+     "effect": "passes",
+     "evidence": "docs",
+     "behaviour_date": "2026-10-17",
+     "source": "chatgpt-mcp-docs"
+    }
+   },
+   "covers": "SSE-ONLY"
+  },
+  {
+   "id": "TEMPLATED",
+   "tier": "registry",
+   "known_failure": false,
+   "title": "A registry URL with {variables}",
+   "detects": "The registry entry's URL has one host per tenant or region.",
+   "fix": "None needed; the owner gives the real URL to this tool.",
+   "per_client": {},
+   "covers": "TEMPLATED"
+  },
+  {
+   "id": "HDR2",
+   "tier": "signin",
+   "known_failure": true,
+   "title": "Two or more required credential headers",
+   "detects": "The server needs two or more credential headers (from the registry entry, or from the credentials the owner passes).",
+   "fix": "Accept the second value in the URL or inside the key.",
+   "guide": "https://lab.docka.ai/guides/apideck-mcp/",
+   "per_client": {
+    "claude-api": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-13",
+     "says": "Anthropic's connector sends one token and no headers.",
+     "cases": [
+      {
+       "date": "2026-10-13",
+       "ref": "c028",
+       "report": "Apideck with the key alone: every call refused ('APIDECK_APP_ID must be set')",
+       "public": "https://github.com/apideck-libraries/mcp/issues/66"
+      }
+     ]
+    },
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-05-28",
+     "says": "Copilot's API key option sends one key, in a header or the query.",
+     "source": "copilot-add-docs"
+    },
+    "chatgpt": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "ChatGPT cannot present custom API keys at all: OAuth or no auth only.",
+     "source": "chatgpt-mcp-docs"
+    },
+    "claude-ai": {
+     "effect": "friction",
+     "evidence": "docs",
+     "label": "advisory",
+     "behaviour_date": "2026-10-17",
+     "says": "Up to four headers; custom header names need Anthropic's approval.",
+     "source": "claude-ai-unlisted-docs"
+    },
+    "openai-api": {
+     "effect": "passes",
+     "evidence": "run",
+     "behaviour_date": "2026-10-13",
+     "cases": [
+      {
+       "date": "2026-10-13",
+       "ref": "c029",
+       "report": "Apideck with all three headers through OpenAI's tool: passed directly"
+      }
+     ]
+    },
+    "claude-code": {
+     "effect": "passes",
+     "evidence": "docs",
+     "behaviour_date": "2026-10-17",
+     "source": "claude-code-docs"
+    }
+   },
+   "covers": "HDR2"
+  },
+  {
+   "id": "API-KEY-ONLY",
+   "tier": "signin",
+   "known_failure": false,
+   "title": "Credentials by API key only, no OAuth",
+   "detects": "The server takes a key and no OAuth (no 401 naming a protected-resource document).",
+   "fix": "Offer OAuth for interface clients.",
+   "per_client": {
+    "chatgpt": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "ChatGPT connects by OAuth or with no auth only.",
+     "source": "chatgpt-mcp-docs"
+    },
+    "claude-ai": {
+     "effect": "friction",
+     "evidence": "docs",
+     "label": "advisory",
+     "behaviour_date": "2026-10-17",
+     "says": "Custom header names need Anthropic's approval (up to four headers).",
+     "source": "claude-ai-unlisted-docs"
+    }
+   }
+  },
+  {
+   "id": "OAUTH-DISC",
+   "tier": "signin",
+   "known_failure": true,
+   "title": "Copilot cannot find the protected-resource document",
+   "detects": "A tokenless GET gets no 401 naming a protected-resource document, the path-form document is not served, and no authorization-server metadata is on the MCP host.",
+   "fix": "Send your 401 challenge to a GET too, or serve the document at /.well-known/oauth-protected-resource/<path>, or serve the metadata on the MCP host.",
+   "guide": "https://lab.docka.ai/guides/copilot-studio-mcp/#7-could-not-discover-authorization-server-metadata",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-17",
+     "says": "'Failed to login. Could not discover authorization server metadata.'",
+     "cases": [
+      {
+       "date": "2026-10-08",
+       "ref": "c030",
+       "report": "another vendor's server: GET 403, the path-form document 403, every metadata path 403 (guide §7)"
+      },
+      {
+       "date": "2026-10-17",
+       "ref": "c031",
+       "report": "our test server: Copilot reads the document named in a 401 to GET, root form included"
+      }
+     ]
+    }
+   },
+   "covers": "OAUTH-DISC"
+  },
+  {
+   "id": "OAUTH-DISC-PARTIAL",
+   "tier": "signin",
+   "known_failure": false,
+   "title": "Only one of the two OAuth documents on the MCP host",
+   "detects": "The protected-resource document is on the MCP host and the metadata only on the auth host, or the other way round.",
+   "fix": "None needed for Copilot.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "passes",
+     "evidence": "run",
+     "behaviour_date": "2026-10-17",
+     "cases": [
+      {
+       "date": "2026-10-17",
+       "ref": "c032",
+       "report": "our test server: Copilot followed the document to the auth host, 3 of 3"
+      },
+      {
+       "date": "2026-10-16",
+       "ref": "c033",
+       "report": "a sales-tool vendor: the path-form document missing, metadata on the host; discovery passed"
+      }
+     ]
+    }
+   },
+   "covers": "OAUTH-DISC-PARTIAL"
+  },
+  {
+   "id": "AS-FIRST",
+   "tier": "signin",
+   "known_failure": false,
+   "title": "The first authorization server in the document does not work",
+   "detects": "authorization_servers lists more than one entry and the first one's metadata cannot be read.",
+   "fix": "Put the working authorization server first.",
+   "per_client": {
+    "claude-ai": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "claude.ai uses only the first authorization_servers entry.",
+     "source": "claude-ai-auth-docs"
+    },
+    "chatgpt": {
+     "effect": "passes",
+     "evidence": "docs",
+     "behaviour_date": "2026-10-17",
+     "says": "ChatGPT tries every entry.",
+     "source": "chatgpt-auth-docs"
+    },
+    "copilot-studio": {
+     "effect": "unknown",
+     "evidence": "run",
+     "label": "unconfirmed",
+     "behaviour_date": "2026-10-17",
+     "says": "Copilot followed the document to the host it names; with several entries, untested."
+    }
+   }
+  },
+  {
+   "id": "NO-DCR",
+   "tier": "signin",
+   "known_failure": false,
+   "title": "No client registration and no client metadata documents",
+   "detects": "The authorization server's metadata has no registration_endpoint and does not support CIMD.",
+   "fix": "Offer dynamic client registration or client ID metadata documents.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-09-30",
+     "says": "Copilot's 'Dynamic discovery' needs registration; a manual OAuth setup still works.",
+     "cases": [
+      {
+       "date": "2026-09-30",
+       "ref": "c034",
+       "report": "a vendor's documented Copilot setup is manual OAuth, and it connected"
+      }
+     ]
+    },
+    "claude-ai": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "claude.ai signs in through DCR or CIMD.",
+     "source": "claude-ai-auth-docs"
+    },
+    "chatgpt": {
+     "effect": "friction",
+     "evidence": "docs",
+     "label": "advisory",
+     "behaviour_date": "2026-10-17",
+     "says": "ChatGPT takes CIMD, DCR or a predefined client.",
+     "source": "chatgpt-auth-docs"
+    },
+    "claude-code": {
+     "effect": "friction",
+     "evidence": "docs",
+     "label": "advisory",
+     "behaviour_date": "2026-10-17",
+     "says": "Claude Code takes DCR, CIMD or a pre-registered client.",
+     "source": "claude-code-docs"
+    }
+   },
+   "covers": "NO-DCR"
+  },
+  {
+   "id": "PKCE-S256",
+   "tier": "signin",
+   "known_failure": false,
+   "title": "S256 not advertised",
+   "detects": "code_challenge_methods_supported does not list S256.",
+   "fix": "Support and advertise PKCE S256.",
+   "per_client": {
+    "chatgpt": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "ChatGPT uses PKCE S256.",
+     "source": "chatgpt-auth-docs"
+    },
+    "copilot-studio": {
+     "effect": "unknown",
+     "evidence": "run",
+     "label": "unconfirmed",
+     "behaviour_date": "2026-10-17",
+     "says": "Copilot sent S256 on our test server; a server without it is untested."
+    }
+   }
+  },
+  {
+   "id": "ISS-9207",
+   "tier": "signin",
+   "known_failure": false,
+   "title": "Which redirect URI ChatGPT will use",
+   "detects": "Whether the authorization server advertises authorization_response_iss_parameter_supported (RFC 9207).",
+   "fix": "Allow the redirect URI that matches your setting.",
+   "per_client": {
+    "chatgpt": {
+     "effect": "unknown",
+     "evidence": "docs",
+     "label": "info",
+     "behaviour_date": "2026-10-17",
+     "says": "Without RFC 9207 iss, ChatGPT uses https://chatgpt.com/connector/oauth/{callback_id} instead of https://chatgpt.com/connector_platform_oauth_redirect.",
+     "source": "chatgpt-auth-docs"
+    }
+   }
+  },
+  {
+   "id": "DCR-REDIRECT",
+   "tier": "signin",
+   "known_failure": true,
+   "needs": [
+    "--register"
+   ],
+   "title": "Client registration refuses a client's redirect URI",
+   "detects": "With --register (your own server only): dynamic client registration with each client's redirect URI.",
+   "fix": "Allow each client's redirect URI, including https://global.consent.azure-apim.net/redirect and its per-connector form.",
+   "guide": "https://lab.docka.ai/guides/copilot-studio-mcp/#6-getdynamicclientregistrationresultasync-failed-microsoft-s-redirect-uri-is-refused",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-09-23",
+     "says": "'GetDynamicClientRegistrationResultAsync failed … invalid_redirect_uri'",
+     "cases": [
+      {
+       "date": "2026-09-23",
+       "ref": "c035",
+       "report": "a CRM vendor's registration accepted Claude, ChatGPT and localhost, and refused both Microsoft URIs (guide §6)"
+      }
+     ]
+    },
+    "claude-ai": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "claude.ai registers https://claude.ai/api/mcp/auth_callback.",
+     "source": "claude-ai-auth-docs"
+    },
+    "chatgpt": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "ChatGPT registers https://chatgpt.com/connector_platform_oauth_redirect (or the callback form without RFC 9207).",
+     "source": "chatgpt-auth-docs"
+    },
+    "claude-code": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "Claude Code registers http://localhost:<port>/callback.",
+     "source": "claude-code-docs"
+    }
+   }
+  },
+  {
+   "id": "SCOPE-DEFAULT",
+   "tier": "signin",
+   "known_failure": true,
+   "needs": [
+    "--register or --client-id"
+   ],
+   "title": "An authorization request without scope is refused",
+   "detects": "The authorization request as Copilot builds it, with no scope, followed up to the login page: an error first.",
+   "fix": "Give requests without a scope a default, or name the scope in WWW-Authenticate.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-16",
+     "says": "The sign-in popup closes with error=access_denied before any consent screen.",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c036",
+       "report": "a sales-tool vendor: a request without scope refused before consent; with a manual OAuth setup, 3 of 3"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "TOKEN-AUDIENCE",
+   "tier": "signin",
+   "known_failure": true,
+   "needs": [
+    "--interactive"
+   ],
+   "title": "A token requested without resource is not accepted",
+   "detects": "With --interactive: a token from a request without resource (as Copilot sends it) gets 401 on tools/list.",
+   "fix": "When no resource is sent, issue tokens for your MCP server.",
+   "guide": "https://lab.docka.ai/guides/copilot-studio-mcp/#8-401-when-loading-tools-after-oauth-sign-in",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-17",
+     "says": "Sign-in works, then loading the tools fails with 401.",
+     "cases": [
+      {
+       "date": "2026-10-08",
+       "ref": "c037",
+       "report": "another vendor's server through our proxy: Copilot's token carried the auth service's default audience; 401 (guide §8)"
+      },
+      {
+       "date": "2026-10-17",
+       "ref": "c038",
+       "report": "our test server: Copilot sent no resource to /authorize or /token"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "CONSENT-PAGE",
+   "tier": "signin",
+   "known_failure": true,
+   "needs": [
+    "--interactive"
+   ],
+   "title": "The consent page does not complete",
+   "detects": "With --interactive: the owner's browser sign-in reaches the callback with a code.",
+   "fix": "Test the consent flow after every release.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-09-24",
+     "says": "Allow did nothing: 'createConsent is not a function'.",
+     "cases": [
+      {
+       "date": "2026-09-24",
+       "ref": "c039",
+       "report": "a forms vendor's consent page threw on Allow; fixed 26 minutes after our letter"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "ROOT-COMBINATOR",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "anyOf, oneOf or allOf at the root of an input schema",
+   "detects": "A combinator keyword at the top level of inputSchema.",
+   "fix": "Put a plain object at the root and move alternatives into properties.",
+   "per_client": {
+    "claude-api": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "Anthropic's connector rejects anyOf/oneOf/allOf at the schema root.",
+     "source": "claude-api-docs"
+    },
+    "claude-code": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "Open issue: tools with a root allOf are dropped.",
+     "source": "claude-code-95504"
+    }
+   }
+  },
+  {
+   "id": "SCHEMA-DIALECT",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "A schema that declares an older JSON Schema draft",
+   "detects": "$schema naming draft-04, draft-06 or draft-07.",
+   "fix": "Write schemas in JSON Schema 2020-12.",
+   "per_client": {
+    "claude-api": {
+     "effect": "passes",
+     "evidence": "run",
+     "behaviour_date": "2026-09-25",
+     "says": "The docs say schemas must be valid JSON Schema 2020-12; a draft-07 $schema declaration did not stop the connector.",
+     "source": "claude-api-docs",
+     "cases": [
+      {
+       "date": "2026-09-25",
+       "ref": "c040",
+       "report": "monday: search, get_board_info and create_items declare draft-07; Claude through Anthropic's connector passed the job"
+      }
+     ]
+    },
+    "claude-ai": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "Claude Desktop rejects draft-07 schemas (open issue).",
+     "source": "claude-code-94351"
+    },
+    "claude-code": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "Open issue: draft-07 schemas rejected.",
+     "source": "claude-code-88882",
+     "note": "Anthropic's API connector accepted draft-07 declarations in our 2026-09-25 run; this is Claude Code's own issue."
+    }
+   }
+  },
+  {
+   "id": "NAME-128",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "A tool's full name over 128 characters in Claude Code",
+   "detects": "mcp__<server name>__<tool name> longer than 128 characters (server name from --server-name).",
+   "fix": "Shorten the tool name.",
+   "per_client": {
+    "claude-code": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "Claude Code drops tools whose full name is over 128 characters.",
+     "source": "claude-code-docs"
+    }
+   }
+  },
+  {
+   "id": "OUTSCHEMA-DECLARED",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "A tool declares outputSchema",
+   "detects": "outputSchema on a tool.",
+   "fix": "Keep results matching the schema (see RESULT-SCHEMA); claude.ai's open issue rejects such tools.",
+   "per_client": {
+    "claude-ai": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-07-22",
+     "says": "Open issue: tools that declare outputSchema are rejected.",
+     "source": "claude-ai-mcp-673"
+    },
+    "claude-api": {
+     "effect": "unknown",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-09-24",
+     "says": "Results are validated against it; a mismatch rejects the whole result (RESULT-SCHEMA).",
+     "cases": [
+      {
+       "date": "2026-09-24",
+       "ref": "c041",
+       "report": "a CRM's deals read"
+      }
+     ]
+    }
+   },
+   "covers": "OUTSCHEMA"
+  },
+  {
+   "id": "NO-READONLYHINT",
+   "tier": "schema",
+   "known_failure": false,
+   "title": "A tool without readOnlyHint",
+   "detects": "Tools whose annotations do not set readOnlyHint.",
+   "fix": "Mark read tools readOnlyHint: true.",
+   "per_client": {
+    "chatgpt": {
+     "effect": "friction",
+     "evidence": "docs",
+     "label": "advisory",
+     "behaviour_date": "2026-10-17",
+     "says": "ChatGPT treats tools without readOnlyHint as writes.",
+     "source": "chatgpt-mcp-docs"
+    }
+   }
+  },
+  {
+   "id": "RESULT-SCHEMA",
+   "tier": "calls",
+   "known_failure": true,
+   "needs": [
+    "calls config"
+   ],
+   "title": "A result that does not match the tool's own outputSchema",
+   "detects": "A read call's structuredContent validated against the tool's outputSchema.",
+   "fix": "Make the schema match what the server returns (for example allow null), or return what the schema says.",
+   "per_client": {
+    "claude-api": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-09-24",
+     "says": "'Tool output schema validation failed': every such call rejected.",
+     "cases": [
+      {
+       "date": "2026-09-24",
+       "ref": "c042",
+       "report": "a CRM's deals read: custom_fields declared an object, returned null"
+      }
+     ]
+    },
+    "claude-code": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "Claude Code validates outputSchema through the MCP TypeScript SDK.",
+     "source": "claude-code-docs"
+    },
+    "openai-api": {
+     "effect": "passes",
+     "evidence": "run",
+     "behaviour_date": "2026-09-24",
+     "cases": [
+      {
+       "date": "2026-09-24",
+       "ref": "c043",
+       "report": "the same CRM read through OpenAI's tool: full result, correct answer"
+      }
+     ]
+    },
+    "copilot-studio": {
+     "effect": "passes",
+     "evidence": "run",
+     "behaviour_date": "2026-09-25",
+     "cases": [
+      {
+       "date": "2026-09-25",
+       "ref": "c044",
+       "report": "the same CRM read in Copilot: 3 of 3 (Microsoft's client does not validate outputs)"
+      }
+     ]
+    },
+    "chatgpt": {
+     "effect": "unknown",
+     "evidence": "docs",
+     "label": "unconfirmed",
+     "behaviour_date": "2026-10-17",
+     "says": "Docs: structuredContent 'Must match the declared outputSchema'; enforcement unverified.",
+     "source": "chatgpt-mcp-docs"
+    }
+   }
+  },
+  {
+   "id": "RESULT-SIZE",
+   "tier": "calls",
+   "known_failure": true,
+   "needs": [
+    "calls config"
+   ],
+   "title": "A result over a client's documented limit",
+   "detects": "The size of each read result against each client's documented limit.",
+   "fix": "Page results or offer filters and totals.",
+   "per_client": {
+    "claude-code": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "Warns above 10,000 output tokens and cuts at 25,000 by default (MAX_MCP_OUTPUT_TOKENS).",
+     "source": "claude-code-docs"
+    },
+    "claude-ai": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "Results capped at about 150,000 characters.",
+     "source": "claude-ai-auth-docs"
+    }
+   }
+  },
+  {
+   "id": "CALL-TIME",
+   "tier": "calls",
+   "known_failure": false,
+   "needs": [
+    "calls config"
+   ],
+   "title": "A call slower than a client's documented limit",
+   "detects": "The time of each read call against each client's documented limit.",
+   "fix": "Answer faster, or return early and page.",
+   "per_client": {
+    "claude-ai": {
+     "effect": "fails",
+     "evidence": "docs",
+     "label": "likely",
+     "behaviour_date": "2026-10-17",
+     "says": "240 seconds per tool call.",
+     "source": "claude-ai-auth-docs"
+    }
+   }
+  },
+  {
+   "id": "RESULT-UTF8",
+   "tier": "calls",
+   "known_failure": true,
+   "needs": [
+    "calls config"
+   ],
+   "title": "Bytes in a result that are not valid UTF-8",
+   "detects": "Each read result's bytes decoded as UTF-8.",
+   "fix": "Encode every string as UTF-8.",
+   "per_client": {
+    "openai-api": {
+     "effect": "friction",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-10-16",
+     "says": "OpenAI's client times out (504) on such results: minutes per task instead of seconds.",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c045",
+       "report": "a CRM's metadata read with Latin-1 bytes: three unfixed runs took 131–254 s with five 504s; re-encoded, 9–11 s"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "PROTOCOL-OPENING",
+   "tier": "calls",
+   "known_failure": true,
+   "title": "OpenAI's MCP 2026-07-28 opening is answered with an error",
+   "detects": "server/discover with the Mcp-Method header, as OpenAI's client sent it on 2026-10-16, through the owner's public URL.",
+   "fix": "Forward all mcp-* headers through every proxy and gateway in front of the server.",
+   "per_client": {
+    "openai-api": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-10-16",
+     "says": "An error there is where OpenAI's client stops (424 before any tool call).",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c046",
+       "report": "our own proxy dropped Mcp-Method: the vendor's server answered -32020, OpenAI reported 424"
+      }
+     ],
+     "note": "Our only case is our own proxy, not a vendor's server; how OpenAI treats a server that does not speak 2026-07-28 is unknown."
+    }
+   }
+  },
+  {
+   "id": "MISSING-PROMISED-TOOL",
+   "tier": "calls",
+   "known_failure": true,
+   "needs": [
+    "promised tools in the config"
+   ],
+   "title": "A tool the docs promise is not served",
+   "detects": "Tools the owner lists as documented, missing from tools/list.",
+   "fix": "Serve the tool, or correct the docs.",
+   "per_client": {
+    "claude-api": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-16",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c047",
+       "report": "a CRM documents an update tool it does not serve: Claude failed the one-deal move 3 of 3, and said why"
+      }
+     ]
+    },
+    "openai-api": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-16",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c048",
+       "report": "the same CRM: GPT failed all 4 counted runs"
+      }
+     ]
+    },
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-16",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c049",
+       "report": "the same CRM: Copilot's new agent failed 3 of 3"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "READ-AFTER-CREATE",
+   "tier": "calls-write",
+   "known_failure": true,
+   "needs": [
+    "--allow-writes (v1)"
+   ],
+   "title": "A read right after a create returns not found",
+   "detects": "Needs writes: create, then read at once.",
+   "fix": "Return the full record from the create call, or retry inside the connector.",
+   "per_client": {
+    "claude-api": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-16",
+     "cases": [
+      {
+       "date": "2026-10-13",
+       "ref": "c050",
+       "report": "Apideck: each agent's read-back after a create got an error or not found"
+      },
+      {
+       "date": "2026-10-16",
+       "ref": "c051",
+       "report": "Apideck 0.25.1 without an agent: read right after create 404, the same read 5 s later returned it",
+       "public": "https://lab.docka.ai/guides/apideck-mcp/"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "UPDATE-IN-CONNECTOR",
+   "tier": "calls-write",
+   "known_failure": true,
+   "needs": [
+    "--allow-writes (v1)"
+   ],
+   "title": "Updates break inside a connector",
+   "detects": "Needs writes: update, then read back.",
+   "fix": "Look up related records by their own ids.",
+   "per_client": {
+    "claude-api": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-16",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c052",
+       "report": "Apideck's Attio connector: 4 of 274 well-formed deal updates went through",
+       "public": "https://github.com/apideck-libraries/mcp/issues/67"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "MODEL-SUMS",
+   "tier": "run-only",
+   "known_failure": true,
+   "title": "The model adds up records itself and gets totals wrong",
+   "detects": "Agent run only: no totals or filters on the server.",
+   "fix": "Offer totals and custom-field filters.",
+   "per_client": {
+    "claude-api": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-16",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c053",
+       "report": "Apideck: pipeline totals 0 of 15 (Attio's own server with a report tool: 10 of 15)",
+       "public": "https://lab.docka.ai/guides/apideck-mcp/"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "DELETE-ON-CLEANUP",
+   "tier": "run-only",
+   "known_failure": true,
+   "title": "A delete tool on the menu gets used on 'clean up'",
+   "detects": "Agent run only.",
+   "fix": "Leave delete tools out of the default set, or put them in a separate tool a client can confirm.",
+   "per_client": {
+    "claude-api": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-16",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c054",
+       "report": "Apideck: 7 of 15 'clean up their deals' runs deleted deals (Attio's own server: none)",
+       "public": "https://lab.docka.ai/guides/apideck-mcp/"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "DUPLICATE-CHECK",
+   "tier": "run-only",
+   "known_failure": true,
+   "title": "The agent creates a record that already exists",
+   "detects": "Agent run only.",
+   "fix": "Offer a search the agent can use before it creates.",
+   "per_client": {
+    "claude-api": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-16",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c055",
+       "report": "Attio job set: the duplicate check failed on both servers, 0 of 15 each",
+       "public": "https://lab.docka.ai/guides/apideck-mcp/"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "PLANNED-NOT-RUN",
+   "tier": "run-only",
+   "known_failure": true,
+   "title": "Copilot plans the call and never runs it",
+   "detects": "Agent run only, read from Copilot's own transcripts (DynamicPlanStepBindUpdate with no DynamicPlanStepFinished).",
+   "fix": "Depends on the cause; see F1-ROW, UNTYPED and REQ8.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-09-25",
+     "cases": [
+      {
+       "date": "2026-09-25",
+       "ref": "c056",
+       "report": "monday create_items: correct call bound, never executed, 24 of 24"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "TOOL-SEARCH-CALLS",
+   "tier": "run-only",
+   "known_failure": true,
+   "title": "Extra calls because the agent must find each tool first",
+   "detects": "Agent run only.",
+   "fix": "Let clients load one API's tools directly.",
+   "per_client": {
+    "claude-api": {
+     "effect": "friction",
+     "evidence": "run",
+     "label": "advisory",
+     "behaviour_date": "2026-10-16",
+     "cases": [
+      {
+       "date": "2026-10-16",
+       "ref": "c057",
+       "report": "Apideck's four-tool default: 11.2 calls per job against 5.9 on Attio's server",
+       "public": "https://lab.docka.ai/guides/apideck-mcp/"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "TOOLS-NOT-SEEN",
+   "tier": "run-only",
+   "known_failure": true,
+   "title": "The agent never sees or picks the tool the job needs",
+   "detects": "Agent run only.",
+   "fix": "Depends on the client; see CUT70.",
+   "per_client": {
+    "copilot-studio": {
+     "effect": "fails",
+     "evidence": "run",
+     "label": "blocker",
+     "behaviour_date": "2026-10-12",
+     "cases": [
+      {
+       "date": "2026-10-12",
+       "ref": "c058",
+       "report": "a website builder: Copilot's new default agent never saw its tools (a classic agent on the same connection did)"
+      },
+      {
+       "date": "2026-10-05",
+       "ref": "c059",
+       "report": "monday search past #70: GPT in Copilot used a generic API tool, 0 of 3"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "CLIENT-CONFIG",
+   "tier": "client-config",
+   "known_failure": false,
+   "title": "Client-side limits that are not a server property",
+   "detects": "Nothing on the server; listed so the report can say what it does not cover.",
+   "fix": "None on the server.",
+   "per_client": {
+    "claude-api": {
+     "effect": "unknown",
+     "evidence": "docs",
+     "label": "info",
+     "behaviour_date": "2026-10-17",
+     "says": "Beta header mcp-client-2025-11-20; at most 20 servers per request; Streamable HTTP or SSE, no stdio; tools only; the caller runs OAuth (no DCR, no redirect URI).",
+     "source": "claude-api-docs"
+    },
+    "claude-ai": {
+     "effect": "unknown",
+     "evidence": "unconfirmed",
+     "label": "unconfirmed",
+     "behaviour_date": "2026-10-17",
+     "says": "UNVERIFIED: tool-count cap not documented. Transports: Streamable HTTP plus legacy SSE; Desktop also runs local servers over stdio."
+    },
+    "openai-api": {
+     "effect": "unknown",
+     "evidence": "unconfirmed",
+     "label": "unconfirmed",
+     "behaviour_date": "2026-10-17",
+     "says": "UNVERIFIED: tool-count and output limits, and whether strict-mode rules apply to MCP tools. Documented: one authorization token plus any headers, no OAuth flow, Streamable HTTP or SSE."
+    },
+    "claude-code": {
+     "effect": "unknown",
+     "evidence": "docs",
+     "label": "info",
+     "behaviour_date": "2026-10-17",
+     "says": "Any headers plus a headersHelper script; stdio, HTTP and SSE (deprecated); OAuth callback on a random localhost port unless --callback-port is set.",
+     "source": "claude-code-docs"
+    },
+    "copilot-studio": {
+     "effect": "unknown",
+     "evidence": "docs",
+     "label": "info",
+     "behaviour_date": "2026-05-28",
+     "says": "Authentication: none, one API key (header or query parameter), or OAuth 2.0.",
+     "source": "copilot-add-docs"
+    }
+   }
+  }
+ ]
+}

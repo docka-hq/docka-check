@@ -1,0 +1,82 @@
+{
+ "_source": "standalone fastmcp==4.0.8",
+ "tools": [
+  {
+   "name": "create_task",
+   "title": "Create Task",
+   "description": "Create a task",
+   "inputSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+     "title": {
+      "type": "string"
+     },
+     "estimate_hours": {
+      "exclusiveMinimum": 0,
+      "type": "number"
+     },
+     "priority": {
+      "default": "low",
+      "enum": [
+       "low",
+       "high"
+      ],
+      "type": "string"
+     },
+     "assignee": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "default": null
+     },
+     "address": {
+      "anyOf": [
+       {
+        "properties": {
+         "city": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "city"
+        ],
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "default": null
+     }
+    },
+    "required": [
+     "title",
+     "estimate_hours"
+    ]
+   },
+   "outputSchema": {
+    "properties": {
+     "result": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "result"
+    ],
+    "type": "object",
+    "x-fastmcp-wrap-result": true
+   },
+   "_meta": {
+    "fastmcp": {
+     "tags": []
+    }
+   }
+  }
+ ]
+}

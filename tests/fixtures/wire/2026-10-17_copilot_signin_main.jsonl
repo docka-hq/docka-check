@@ -1,0 +1,24 @@
+{"at": "2026-10-18T05:41:23.396+00:00", "role": "main", "method": "GET", "path": "/mcp", "status": 401, "query_keys": [], "has_bearer": false, "note": "GET without a valid token"}
+{"at": "2026-10-18T05:41:23.678+00:00", "role": "main", "method": "GET", "path": "/.well-known/oauth-protected-resource/mcp", "status": 200, "query_keys": [], "has_bearer": false, "note": "prm path form"}
+{"at": "2026-10-18T05:41:24.224+00:00", "role": "as", "method": "GET", "path": "/.well-known/oauth-authorization-server", "status": 200, "query_keys": [], "has_bearer": false, "note": "metadata on the auth host"}
+{"at": "2026-10-18T05:41:24.569+00:00", "role": "as", "method": "POST", "path": "/register", "status": 201, "query_keys": [], "has_bearer": false, "note": "registered 'Credential Manager' auth=none redirect_hosts=['global.consent.azure-apim.net'] scope='mcp'"}
+{"at": "2026-10-18T05:41:26.796+00:00", "role": "main", "method": "GET", "path": "/mcp", "status": 401, "query_keys": [], "has_bearer": false, "note": "GET without a valid token"}
+{"at": "2026-10-18T05:41:26.994+00:00", "role": "main", "method": "GET", "path": "/.well-known/oauth-protected-resource/mcp", "status": 200, "query_keys": [], "has_bearer": false, "note": "prm path form"}
+{"at": "2026-10-18T05:41:27.249+00:00", "role": "as", "method": "GET", "path": "/.well-known/oauth-authorization-server", "status": 200, "query_keys": [], "has_bearer": false, "note": "metadata on the auth host"}
+{"at": "2026-10-18T05:41:27.744+00:00", "role": "as", "method": "GET", "path": "/authorize", "status": 302, "query_keys": ["client_id", "code_challenge", "code_challenge_method", "redirect_uri", "response_type", "state"], "has_bearer": false, "note": "approved at once; redirect_registered=True pkce=True scope=None resource=None redirect_host=global.consent.azure-apim.net"}
+{"at": "2026-10-18T05:41:28.237+00:00", "role": "main", "method": "GET", "path": "/mcp", "status": 401, "query_keys": [], "has_bearer": false, "note": "GET without a valid token"}
+{"at": "2026-10-18T05:41:28.450+00:00", "role": "main", "method": "GET", "path": "/.well-known/oauth-protected-resource/mcp", "status": 200, "query_keys": [], "has_bearer": false, "note": "prm path form"}
+{"at": "2026-10-18T05:41:28.670+00:00", "role": "as", "method": "GET", "path": "/.well-known/oauth-authorization-server", "status": 200, "query_keys": [], "has_bearer": false, "note": "metadata on the auth host"}
+{"at": "2026-10-18T05:41:28.903+00:00", "role": "as", "method": "POST", "path": "/token", "status": 200, "query_keys": [], "has_bearer": false, "note": "token issued: grant=authorization_code client_auth=none resource=None verifier=True"}
+{"at": "2026-10-18T05:42:26.975+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 200, "query_keys": [], "has_bearer": true, "note": "rpc ['initialize']"}
+{"at": "2026-10-18T05:42:27.265+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 200, "query_keys": [], "has_bearer": true, "note": "rpc ['initialize']"}
+{"at": "2026-10-18T05:42:28.517+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 202, "query_keys": [], "has_bearer": true, "note": "rpc ['notifications/initialized']"}
+{"at": "2026-10-18T05:42:29.287+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 200, "query_keys": [], "has_bearer": true, "note": "rpc ['tools/list']"}
+{"at": "2026-10-18T05:42:34.635+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 202, "query_keys": [], "has_bearer": true, "note": "rpc ['notifications/initialized']"}
+{"at": "2026-10-18T05:42:47.667+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 200, "query_keys": [], "has_bearer": true, "note": "rpc ['initialize']"}
+{"at": "2026-10-18T05:42:48.168+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 202, "query_keys": [], "has_bearer": true, "note": "rpc ['notifications/initialized']"}
+{"at": "2026-10-18T05:42:48.630+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 200, "query_keys": [], "has_bearer": true, "note": "rpc ['tools/list']"}
+{"at": "2026-10-18T05:42:50.850+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 200, "query_keys": [], "has_bearer": true, "note": "rpc ['tools/call']"}
+{"at": "2026-10-18T05:49:23.803+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 200, "query_keys": [], "has_bearer": true, "note": "rpc ['initialize']"}
+{"at": "2026-10-18T05:49:24.276+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 202, "query_keys": [], "has_bearer": true, "note": "rpc ['notifications/initialized']"}
+{"at": "2026-10-18T05:49:24.596+00:00", "role": "main", "method": "POST", "path": "/mcp", "status": 200, "query_keys": [], "has_bearer": true, "note": "rpc ['tools/list']"}

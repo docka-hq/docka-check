@@ -1,0 +1,88 @@
+{
+ "_source": "official MCP Python SDK mcp==1.30.0 (FastMCP class)",
+ "tools": [
+  {
+   "name": "create_task",
+   "description": "Create a task",
+   "inputSchema": {
+    "$defs": {
+     "Address": {
+      "properties": {
+       "city": {
+        "title": "City",
+        "type": "string"
+       }
+      },
+      "required": [
+       "city"
+      ],
+      "title": "Address",
+      "type": "object"
+     }
+    },
+    "properties": {
+     "title": {
+      "title": "Title",
+      "type": "string"
+     },
+     "estimate_hours": {
+      "exclusiveMinimum": 0,
+      "title": "Estimate Hours",
+      "type": "number"
+     },
+     "priority": {
+      "default": "low",
+      "enum": [
+       "low",
+       "high"
+      ],
+      "title": "Priority",
+      "type": "string"
+     },
+     "assignee": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "default": null,
+      "title": "Assignee"
+     },
+     "address": {
+      "anyOf": [
+       {
+        "$ref": "#/$defs/Address"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "default": null
+     }
+    },
+    "required": [
+     "title",
+     "estimate_hours"
+    ],
+    "title": "create_taskArguments",
+    "type": "object"
+   },
+   "outputSchema": {
+    "properties": {
+     "result": {
+      "title": "Result",
+      "type": "string"
+     }
+    },
+    "required": [
+     "result"
+    ],
+    "title": "create_taskOutput",
+    "type": "object"
+   }
+  }
+ ]
+}
